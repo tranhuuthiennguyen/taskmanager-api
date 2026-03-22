@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.thiennth.taskmanager.dto.PaginatedResponse;
 import com.thiennth.taskmanager.dto.request.CreateTaskRequest;
+import com.thiennth.taskmanager.dto.request.UpdateTaskRequest;
+import com.thiennth.taskmanager.dto.request.UpdateTaskStatusRequest;
 import com.thiennth.taskmanager.dto.response.TaskResponse;
 import com.thiennth.taskmanager.exception.ForbiddenActionException;
 import com.thiennth.taskmanager.exception.ResourceNotFoundException;
@@ -35,7 +37,7 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public TaskResponse getById(Long id) {
-        Task task = taskRepository.getById(id).orElseThrow(() -> new TaskNotFoundException(id));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         if (!task.getOwnerId().equals(authUtils.getCurrentUserId())) {
             throw new ForbiddenActionException();
         }
@@ -87,5 +89,76 @@ public class TaskService {
         tagRepository.saveTagsByTaskId(task.getId(), tagIds);
         List<Tag> tags = tagRepository.getList(tagIds);
         return TaskResponse.from(task, tags);
+    }
+
+    @Transactional
+    public TaskResponse update(Long id, UpdateTaskRequest request) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+        if (!task.getOwnerId().equals(authUtils.getCurrentUserId())) {
+            throw new ForbiddenActionException();
+        }
+        task.update(
+            request.getTitle(), 
+            request.getDescription(), 
+            request.getPriority(), 
+            request.getDueDate(), 
+            request.getAssigneeId());
+        Task updatedTask = taskRepository.update(task).orElseThrow();
+        List<Tag> tags = tagRepository.getListByTaskId(task.getId());
+        return TaskResponse.from(updatedTask, tags);
+    }
+
+    @Transactional
+    public TaskResponse update(Long id, UpdateTaskStatusRequest request) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+        if (!task.getOwnerId().equals(authUtils.getCurrentUserId())) {
+            throw new ForbiddenActionException();
+        }
+        if (task.getStatus().equals(request.getStatus())) {
+            return null;
+        }
+        Task updated = taskRepository.update(task.getId(), request.getStatus()).orElseThrow();
+        List<Tag> tags = tagRepository.getListByTaskId(task.getId());
+        return TaskResponse.from(updated, tags);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskResponse> getList() {
+        Long assigneeId = authUtils.getCurrentUserId();
+        List<Task> tasks = taskRepository.getList(assigneeId);
+        Map<Long, List<Tag>> tagsByTaskId = tagRepository.getListByTaskIds(tasks.stream().map(Task::getId).toList());
+        return tasks.stream()
+            .map(task -> TaskResponse.from(task, tagsByTaskId.getOrDefault(task.getId(), List.of())))
+            .toList();
+    }
+
+    @Transactional
+    public TaskResponse addTag(Long taskId, Long tagId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        if (!task.getOwnerId().equals(authUtils.getCurrentUserId())) {
+            throw new ForbiddenActionException();
+        }
+        List<Tag> tags = tagRepository.getListByTaskId(taskId);
+        if (tags.stream().map(Tag::getId).toList().contains(tagId)) {
+            return null;
+        }
+        tagRepository.addTag(taskId, tagId);
+        List<Tag> updatedTags = tagRepository.getListByTaskId(taskId);
+        return TaskResponse.from(task, updatedTags);
+    }
+
+    @Transactional
+    public TaskResponse removeTag(Long taskId, Long tagId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
+        if (!task.getOwnerId().equals(authUtils.getCurrentUserId())) {
+            throw new ForbiddenActionException();
+        }
+        List<Tag> tags = tagRepository.getListByTaskId(taskId);
+        if (!tags.stream().map(Tag::getId).toList().contains(tagId)) {
+            return null;
+        }
+        tagRepository.removeTag(taskId, tagId);
+        List<Tag> updatedTags = tagRepository.getListByTaskId(taskId);
+        return TaskResponse.from(task, updatedTags);
     }
 }

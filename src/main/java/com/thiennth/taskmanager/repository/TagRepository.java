@@ -10,4 +10,6 @@ public interface TagRepository {
     Map<Long, List<Tag>> getListByTaskIds(List<Long> taskIds);
     List<Tag> getListByTaskId(Long taskId);
     List<Tag> getList(List<Long> tagIds);
+    void addTag(Long taskId, Long tagId);
+    void removeTag(Long taskId, Long tagId);
 }

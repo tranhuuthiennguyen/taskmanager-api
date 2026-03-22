@@ -11,6 +11,9 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.thiennth.taskmanager.model.Tag;
@@ -25,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TagRepositoryImpl implements TagRepository {
 
     private final JdbcTemplate jdbc;
+    private final NamedParameterJdbcTemplate namedJdbc;
 
     private static final RowMapper<Tag> TAG_ROW_MAPPER = (rs, rowNum) -> {
         return Tag.from(
@@ -141,6 +145,43 @@ public class TagRepositoryImpl implements TagRepository {
             log.info("Tags list found: {}", tagIds);
             return tags;
         } catch (DataAccessException e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void addTag(Long taskId, Long tagId) {
+        String sql = """
+                INSERT INTO task_tags (task_id, tag_id) VALUES (:taskId, :tagId)
+                """;
+
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("taskId", taskId)
+            .addValue("tagId", tagId);
+
+        try {
+            namedJdbc.update(sql, params);
+            log.info("Add new tag");
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void removeTag(Long taskId, Long tagId) {
+        String sql = """
+                DELETE FROM task_tags
+                WHERE task_id = :taskId AND tag_id = :tagId
+                """;
+
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("taskId", taskId)
+            .addValue("tagId", tagId);
+
+        try {
+            namedJdbc.update(sql, params);
+            log.info("Tag has been removed from task id {}", taskId);
+        } catch (Exception e) {
             throw e;
         }
     }

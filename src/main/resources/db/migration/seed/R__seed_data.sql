@@ -177,3 +177,201 @@ INSERT INTO task_tags (task_id, tag_id) VALUES
     (49, 11), (49, 3),
     -- task 50: Performance testing
     (50, 14), (50, 1);
+
+-- =============================================================================
+-- Seed: comments
+-- 50 tasks, 2 users
+-- Run after users and tasks seeds
+-- =============================================================================
+
+INSERT INTO comments (task_id, author_id, content, edited, created_at, updated_at)
+VALUES
+
+-- Task 1
+(1,  1, 'Picking this up today, will update by EOD.', FALSE, NOW() - INTERVAL '30 days', NULL),
+(1,  2, 'Let me know if you need anything from my end.', FALSE, NOW() - INTERVAL '29 days 18 hours', NULL),
+
+-- Task 2
+(2,  2, 'Started scoping this out. Looks straightforward.', FALSE, NOW() - INTERVAL '29 days', NULL),
+(2,  1, 'Agreed. I can help with the integration part.', FALSE, NOW() - INTERVAL '28 days 20 hours', NULL),
+(2,  2, 'Done. Deployed to staging for review.', TRUE,  NOW() - INTERVAL '28 days', NOW() - INTERVAL '27 days 22 hours'),
+
+-- Task 3
+(3,  1, 'Blocked on a dependency. Following up with the team.', FALSE, NOW() - INTERVAL '28 days', NULL),
+(3,  2, 'I can unblock this. Give me a few hours.', FALSE, NOW() - INTERVAL '27 days 12 hours', NULL),
+
+-- Task 4
+(4,  2, 'Requirements clarified with the client. Starting now.', FALSE, NOW() - INTERVAL '27 days', NULL),
+(4,  1, 'Let me know when it is ready for review.', FALSE, NOW() - INTERVAL '26 days 18 hours', NULL),
+(4,  2, 'Ready. PR is up.', FALSE, NOW() - INTERVAL '26 days', NULL),
+
+-- Task 5
+(5,  1, 'This one is more complex than estimated. Will need an extra day.', TRUE,  NOW() - INTERVAL '26 days', NOW() - INTERVAL '25 days 20 hours'),
+(5,  2, 'No problem, updated the deadline.', FALSE, NOW() - INTERVAL '25 days 18 hours', NULL),
+
+-- Task 6
+(6,  2, 'All clear on my end. Moving forward.', FALSE, NOW() - INTERVAL '25 days', NULL),
+
+-- Task 7
+(7,  1, 'First draft done. Needs a second pair of eyes.', FALSE, NOW() - INTERVAL '24 days', NULL),
+(7,  2, 'Reviewed. Left some notes in the doc.', FALSE, NOW() - INTERVAL '23 days 18 hours', NULL),
+(7,  1, 'Addressed all comments. Closing this out.', FALSE, NOW() - INTERVAL '23 days', NULL),
+
+-- Task 8
+(8,  2, 'Running into an issue with the DB schema. Will investigate.', FALSE, NOW() - INTERVAL '23 days', NULL),
+(8,  1, 'Could be related to the migration we ran last week. Check V4.', FALSE, NOW() - INTERVAL '22 days 20 hours', NULL),
+(8,  2, 'That was it. Fixed and verified.', TRUE,  NOW() - INTERVAL '22 days', NOW() - INTERVAL '21 days 22 hours'),
+
+-- Task 9
+(9,  1, 'Straightforward task. Done in one sitting.', FALSE, NOW() - INTERVAL '22 days', NULL),
+
+-- Task 10
+(10, 2, 'Needs input from the design team before I can proceed.', FALSE, NOW() - INTERVAL '21 days', NULL),
+(10, 1, 'I will chase them up.', FALSE, NOW() - INTERVAL '20 days 18 hours', NULL),
+(10, 2, 'Got the assets. Back on track.', FALSE, NOW() - INTERVAL '20 days', NULL),
+
+-- Task 11
+(11, 1, 'Scope is larger than the ticket suggests. Flagging this.', TRUE,  NOW() - INTERVAL '20 days', NOW() - INTERVAL '19 days 20 hours'),
+(11, 2, 'Good catch. Updated the estimate accordingly.', FALSE, NOW() - INTERVAL '19 days 18 hours', NULL),
+
+-- Task 12
+(12, 2, 'Done. All tests passing.', FALSE, NOW() - INTERVAL '19 days', NULL),
+
+-- Task 13
+(13, 1, 'Starting on this. Should be quick.', FALSE, NOW() - INTERVAL '18 days', NULL),
+(13, 2, 'Let me know if you hit anything unexpected.', FALSE, NOW() - INTERVAL '17 days 20 hours', NULL),
+
+-- Task 14
+(14, 2, 'On hold until task 13 is merged.', FALSE, NOW() - INTERVAL '17 days', NULL),
+(14, 1, 'Task 13 is merged. You are clear to go.', FALSE, NOW() - INTERVAL '16 days 12 hours', NULL),
+(14, 2, 'On it.', FALSE, NOW() - INTERVAL '16 days', NULL),
+
+-- Task 15
+(15, 1, 'Reviewed the spec. Have a few questions, will post in Slack.', FALSE, NOW() - INTERVAL '15 days', NULL),
+
+-- Task 16
+(16, 2, 'Completed. Pushed to main.', FALSE, NOW() - INTERVAL '15 days', NULL),
+(16, 1, 'Confirmed. Looks good on staging.', FALSE, NOW() - INTERVAL '14 days 18 hours', NULL),
+
+-- Task 17
+(17, 1, 'This needs a config change on the infra side first.', FALSE, NOW() - INTERVAL '14 days', NULL),
+(17, 2, 'I will handle the infra part. You take the app layer.', FALSE, NOW() - INTERVAL '13 days 18 hours', NULL),
+(17, 1, 'Works end to end. Done.', FALSE, NOW() - INTERVAL '13 days', NULL),
+
+-- Task 18
+(18, 2, 'Quick win. Already deployed.', FALSE, NOW() - INTERVAL '13 days', NULL),
+
+-- Task 19
+(19, 1, 'Found an edge case we did not account for. Investigating.', TRUE,  NOW() - INTERVAL '12 days', NOW() - INTERVAL '11 days 20 hours'),
+(19, 2, 'Keep me posted. We may need to revisit the requirements.', FALSE, NOW() - INTERVAL '11 days 18 hours', NULL),
+(19, 1, 'Edge case handled. Added a test for it as well.', FALSE, NOW() - INTERVAL '11 days', NULL),
+
+-- Task 20
+(20, 2, 'Dependencies updated. No breaking changes.', FALSE, NOW() - INTERVAL '11 days', NULL),
+
+-- Task 21
+(21, 1, 'Starting today. Estimated two days of work.', FALSE, NOW() - INTERVAL '10 days', NULL),
+(21, 2, 'Sounds good. Ping me if you need a review.', FALSE, NOW() - INTERVAL '9 days 20 hours', NULL),
+
+-- Task 22
+(22, 2, 'Ran into a permissions issue on the staging environment.', FALSE, NOW() - INTERVAL '9 days', NULL),
+(22, 1, 'Fixed the role config. Try again.', FALSE, NOW() - INTERVAL '8 days 18 hours', NULL),
+(22, 2, 'Working now. Continuing.', FALSE, NOW() - INTERVAL '8 days', NULL),
+
+-- Task 23
+(23, 1, 'Completed ahead of schedule.', FALSE, NOW() - INTERVAL '8 days', NULL),
+
+-- Task 24
+(24, 2, 'Waiting on sign-off from the client before proceeding.', FALSE, NOW() - INTERVAL '7 days', NULL),
+(24, 1, 'I will follow up with them today.', FALSE, NOW() - INTERVAL '6 days 18 hours', NULL),
+(24, 2, 'Sign-off received. Starting now.', FALSE, NOW() - INTERVAL '6 days', NULL),
+
+-- Task 25
+(25, 1, 'Half done. Will finish tomorrow morning.', TRUE,  NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days 22 hours'),
+
+-- Task 26
+(26, 2, 'Done and verified in production.', FALSE, NOW() - INTERVAL '5 days', NULL),
+
+-- Task 27
+(27, 1, 'Small task. Wrapped up in an hour.', FALSE, NOW() - INTERVAL '5 days', NULL),
+
+-- Task 28
+(28, 2, 'Needs more context from the original ticket. Will ask.', FALSE, NOW() - INTERVAL '4 days', NULL),
+(28, 1, 'Added more detail to the ticket. Should be clear now.', FALSE, NOW() - INTERVAL '3 days 20 hours', NULL),
+(28, 2, 'Makes sense now. On it.', FALSE, NOW() - INTERVAL '3 days 18 hours', NULL),
+
+-- Task 29
+(29, 1, 'Found a regression introduced in the last release. Fixing now.', TRUE,  NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days 22 hours'),
+(29, 2, 'Good catch. Let me know when the fix is ready for review.', FALSE, NOW() - INTERVAL '2 days 20 hours', NULL),
+(29, 1, 'Fix is up. PR linked in the ticket.', FALSE, NOW() - INTERVAL '2 days', NULL),
+
+-- Task 30
+(30, 2, 'All done. Closing.', FALSE, NOW() - INTERVAL '2 days', NULL),
+
+-- Task 31
+(31, 1, 'In progress. About halfway through.', FALSE, NOW() - INTERVAL '1 day 18 hours', NULL),
+
+-- Task 32
+(32, 2, 'Completed the first phase. Second phase starts tomorrow.', FALSE, NOW() - INTERVAL '1 day 12 hours', NULL),
+
+-- Task 33
+(33, 1, 'Ran all integration tests. Everything green.', FALSE, NOW() - INTERVAL '1 day', NULL),
+
+-- Task 34
+(34, 2, 'Minor UI tweak needed before this can close. Almost done.', TRUE,  NOW() - INTERVAL '20 hours', NOW() - INTERVAL '18 hours'),
+
+-- Task 35
+(35, 1, 'Confirmed working on all supported browsers.', FALSE, NOW() - INTERVAL '18 hours', NULL),
+
+-- Task 36
+(36, 2, 'Done. Documentation updated as well.', FALSE, NOW() - INTERVAL '16 hours', NULL),
+
+-- Task 37
+(37, 1, 'Needs a DB index added before this performs acceptably.', FALSE, NOW() - INTERVAL '14 hours', NULL),
+(37, 2, 'Index added via migration V12. Re-test when ready.', FALSE, NOW() - INTERVAL '12 hours', NULL),
+(37, 1, 'Tested. Query time went from 800ms to 12ms. Closing.', FALSE, NOW() - INTERVAL '10 hours', NULL),
+
+-- Task 38
+(38, 2, 'Starting now. Should be done by end of day.', FALSE, NOW() - INTERVAL '9 hours', NULL),
+
+-- Task 39
+(39, 1, 'This overlaps with task 40. Checking with the team.', TRUE,  NOW() - INTERVAL '8 hours', NOW() - INTERVAL '7 hours'),
+(39, 2, 'They are separate concerns. Safe to proceed independently.', FALSE, NOW() - INTERVAL '6 hours', NULL),
+
+-- Task 40
+(40, 2, 'Done on my end. Needs sign-off from user 1.', FALSE, NOW() - INTERVAL '5 hours', NULL),
+(40, 1, 'Signed off. Merging.', FALSE, NOW() - INTERVAL '4 hours', NULL),
+
+-- Task 41
+(41, 1, 'Quick fix. Already live.', FALSE, NOW() - INTERVAL '4 hours', NULL),
+
+-- Task 42
+(42, 2, 'In review. Will be done shortly.', FALSE, NOW() - INTERVAL '3 hours', NULL),
+
+-- Task 43
+(43, 1, 'Completed. All acceptance criteria met.', FALSE, NOW() - INTERVAL '3 hours', NULL),
+
+-- Task 44
+(44, 2, 'Pushed the changes. Awaiting pipeline.', FALSE, NOW() - INTERVAL '2 hours', NULL),
+(44, 1, 'Pipeline passed. Good to merge.', FALSE, NOW() - INTERVAL '90 minutes', NULL),
+
+-- Task 45
+(45, 1, 'On it. Will update shortly.', FALSE, NOW() - INTERVAL '80 minutes', NULL),
+
+-- Task 46
+(46, 2, 'Finished. Linked the PR in the ticket description.', TRUE,  NOW() - INTERVAL '70 minutes', NOW() - INTERVAL '60 minutes'),
+
+-- Task 47
+(47, 1, 'Done. Smoke tested in staging.', FALSE, NOW() - INTERVAL '55 minutes', NULL),
+
+-- Task 48
+(48, 2, 'Minor issue found during testing. Fixing now.', FALSE, NOW() - INTERVAL '45 minutes', NULL),
+(48, 1, 'Seen it too. It is the null check on line 42.', FALSE, NOW() - INTERVAL '35 minutes', NULL),
+(48, 2, 'Fixed. Tests updated and passing.', FALSE, NOW() - INTERVAL '25 minutes', NULL),
+
+-- Task 49
+(49, 1, 'Completed and verified end to end.', FALSE, NOW() - INTERVAL '15 minutes', NULL),
+
+-- Task 50
+(50, 2, 'Just picked this up. Will have an update within the hour.', FALSE, NOW() - INTERVAL '5 minutes', NULL),
+(50, 1, 'No rush. Take your time.', FALSE, NOW() - INTERVAL '2 minutes', NULL);

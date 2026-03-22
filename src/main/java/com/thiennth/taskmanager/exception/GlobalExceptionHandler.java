@@ -27,93 +27,100 @@ public class GlobalExceptionHandler {
     // 401 — wrong credentials (bad password or user not found)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        log.warn(ex.getMessage());
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(ex.getMessage())
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
     }
 
     // 401 — user not found during Spring Security auth
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUsernameNotFound(UsernameNotFoundException ex) {
+        log.warn(ex.getMessage());
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(ex.getMessage())
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
     }
 
     // 4xx - business rule violations
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
+        log.warn(ex.getMessage());
         HttpStatus status = HttpStatus.CONFLICT;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(ex.getMessage())
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
     }
 
 	@ExceptionHandler(ForbiddenActionException.class)
 	public ResponseEntity<ErrorResponse> handleForbiddenAction(ForbiddenActionException ex) {
+        log.warn(ex.getMessage());
 		HttpStatus status = HttpStatus.FORBIDDEN;
 		return ResponseEntity.status(status)
-				.body(ErrorResponse.builder()
-						.statusCode(status)
-						.message(ex.getMessage())
-						.error(status.getReasonPhrase())
-						.build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
 	}
 
 	// 404 Resource not found
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        log.warn(ex.getMessage());
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		return ResponseEntity.status(status)
-				.body(ErrorResponse.builder()
-						.statusCode(status)
-						.message(ex.getMessage())
-						.error(status.getReasonPhrase())
-						.build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
 	}
 
     // 400 - validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        log.warn(ex.getMessage());
         HttpStatus status = HttpStatus.BAD_REQUEST;
         List<String> subErrors = ex.getBindingResult().getFieldErrors().stream()
-                .map(e -> e.getField() + ": " + e.getDefaultMessage()).toList();
+            .map(e -> e.getField() + ": " + e.getDefaultMessage()).toList();
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(ex.getMessage())
-                        .error(status.getReasonPhrase())
-                        .subErrors(subErrors)
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message("Validation errors")
+                .error(status.getReasonPhrase())
+                .subErrors(subErrors)
+                .build());
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
+        log.warn(ex.getMessage());
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(ex.getMessage())
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(ex.getMessage())
+                .error(status.getReasonPhrase())
+                .build());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn(ex.getMessage());
         String message = "Invalid request body";
         Throwable cause = ex.getCause();
-        log.debug(cause.getMessage());
         if (cause instanceof InvalidFormatException ife) {
             String field = ife.getPath().stream()
                 .map(JsonMappingException.Reference::getFieldName)
@@ -125,11 +132,11 @@ public class GlobalExceptionHandler {
         }
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message(message)
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message(message)
+                .error(status.getReasonPhrase())
+                .build());
     }
     
 
@@ -139,11 +146,11 @@ public class GlobalExceptionHandler {
         log.error("Database error: ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message("A database error occurred")
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message("A database error occurred")
+                .error(status.getReasonPhrase())
+                .build());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -151,11 +158,11 @@ public class GlobalExceptionHandler {
         log.error("Data integrity violation — likely a missing DTO validation: ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message("An unexpected error occurred")
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message("An unexpected error occurred")
+                .error(status.getReasonPhrase())
+                .build());
     }
 
     @ExceptionHandler(Exception.class)
@@ -163,10 +170,10 @@ public class GlobalExceptionHandler {
         log.error("Unknown error: ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(status)
-                .body(ErrorResponse.builder()
-                        .statusCode(status)
-                        .message("An unknown error occurred")
-                        .error(status.getReasonPhrase())
-                        .build());
+            .body(ErrorResponse.builder()
+                .statusCode(status)
+                .message("An unknown error occurred")
+                .error(status.getReasonPhrase())
+                .build());
     }
 }

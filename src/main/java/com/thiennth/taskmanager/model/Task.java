@@ -4,22 +4,22 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Task {
     private final Long          id;
-    private final String        title;
-    private final String        description;
-    private final TaskStatus    status;
-    private final TaskPriority  priority;
-    private final LocalDate     dueDate;
+    private       String        title;
+    private       String        description;
+    private       TaskStatus    status;
+    private       TaskPriority  priority;
+    private       LocalDate     dueDate;
     private final Long          ownerId;
-    private final Long          assigneeId;
+    private       Long          assigneeId;
     private final Instant       createdAt;
-    private final Instant       updatedAt;
+    private       Instant       updatedAt;
 
     public static Task of(
         String          title,
@@ -46,5 +46,13 @@ public class Task {
         Instant         updatedAt
     ) {
         return new Task(id, title, description, status, priority, dueDate, ownerId, assigneeId, createdAt, updatedAt);
+    }
+
+    public void update(String title, String description, TaskPriority priority, LocalDate dueDate, Long assigneeId) {
+        this.title          = title;
+        this.description    = description;
+        this.priority       = priority;
+        this.dueDate        = dueDate;
+        this.assigneeId     = assigneeId;
     }
 }

@@ -7,3 +7,7 @@ CREATE TABLE comments (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMPTZ
 );
+
+CREATE TRIGGER trg_comments_updated_at
+BEFORE UPDATE ON comments
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();

@@ -60,24 +60,32 @@ public class TaskRepositoryImpl implements TaskRepository {
         String sql = """
                 SELECT *
                 FROM tasks
-                WHERE owner_id = ?
+                WHERE owner_id = :ownerId
                 ORDER BY created_at DESC
-                LIMIT ? OFFSET ?
+                LIMIT :limit OFFSET :page
                 """;
 
         String countSql = """
                 SELECT COUNT(*)
                 FROM tasks
-                WHERE owner_id = ?
+                WHERE owner_id = :ownerId
                 """;
         
         int page = query.getPage();
         int limit = query.getLimit();
         Long userId = query.getUserId();
 
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("ownerId", userId)
+            .addValue("limit", limit)
+            .addValue("page", (page - 1) * limit);
+
+        SqlParameterSource cntParams = new MapSqlParameterSource()
+            .addValue("ownerId", userId);
+
         try {
-            List<Task> tasks = jdbc.query(sql, TASK_ROW_MAPPER, query.getUserId(), limit, (page - 1) * limit);
-            long total = jdbc.queryForObject(countSql, Long.class, userId);
+            List<Task> tasks = namedJdbc.query(sql, params, TASK_ROW_MAPPER);
+            long total = namedJdbc.queryForObject(countSql, cntParams, Long.class);
             return new Paginated<Task>(page, limit, total, tasks);
         } catch (EmptyResultDataAccessException e) {
             return new Paginated<Task>(limit, page, 0, null);
@@ -120,7 +128,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
 
     @Override
-    public Optional<Task> getById(Long id) {
+    public Optional<Task> findById(Long id) {
         String sql = """
                 SELECT * FROM tasks
                 WHERE tasks.id = ?
@@ -133,6 +141,75 @@ public class TaskRepositoryImpl implements TaskRepository {
         } catch (DataAccessException e) {
             log.error("Failed to retrive task with id {}", id);
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Task> update(Task task) {
+        String sql = """
+                UPDATE tasks
+                SET title = :title,
+                    description = :description,
+                    priority = :priority,
+                    due_date = :dueDate,
+                    assignee_id = :assigneeId
+                WHERE id = :id
+                RETURNING *
+                """;
+
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("title", task.getTitle())
+            .addValue("description", task.getDescription())
+            .addValue("priority", task.getPriority().toString())
+            .addValue("dueDate", task.getDueDate())
+            .addValue("assigneeId", task.getAssigneeId())
+            .addValue("id", task.getId());
+
+        try {
+            Task updatedTask = namedJdbc.queryForObject(sql, params, TASK_ROW_MAPPER);
+            log.info("Updated task with id: {}", task.getId());
+            return Optional.ofNullable(updatedTask);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    public Optional<Task> update(Long id, TaskStatus status) {
+        String sql = """
+                UPDATE tasks
+                SET status = :status
+                WHERE id = :id
+                RETURNING *
+                """;
+
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("status", status.toString())
+            .addValue("id", id);
+        try {
+            Task updated = namedJdbc.queryForObject(sql, params, TASK_ROW_MAPPER);
+            log.info("Updated task status with id: {}", id);
+            return Optional.ofNullable(updated);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    public List<Task> getList(Long assigneeId) {
+        String sql = """
+                SELECT * FROM tasks
+                WHERE assignee_id = ?
+                """;
+
+        try {
+            List<Task> tasks = jdbc.query(sql, TASK_ROW_MAPPER, assigneeId);
+            log.info("Assigned task list for user with id: {}", assigneeId);
+            return tasks;
+        } catch (Exception e) {
+            throw e;
         }
     }
     
